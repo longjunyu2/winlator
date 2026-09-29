@@ -1,3 +1,4 @@
+
 name: 构建测试apk
 
 on:
@@ -7,21 +8,33 @@ jobs:
   build:
     name: "构建测试apk"
     runs-on: ubuntu-latest
+
     steps:
+    - name: 0 下载项目源码
+      uses: actions/checkout@v4
+
     - name: 1 安装依赖
       run: |
         sudo apt update && sudo apt install -y libarchive-tools wget
+
+    - name: 2 gradle验证
+      uses: gradle/wrapper-validation-action@v2
+
     - name: 3 java配置
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
-        
+
     - name: 4. 构建
-      run: chmod +x ./gradlew && ./gradlew assembleDebug
-    
+      run: |
+        ls -la
+        chmod +x ./gradlew
+        ./gradlew assembleDebug
+
     - name: 5. 上传apk到action
       uses: actions/upload-artifact@v4
       with:
         name: winlator-debug
         path: ./app/build/outputs/apk/debug/app-debug.apk
+        
